@@ -14,7 +14,7 @@ export class AuditEvent {
   event_type: string;
 
   @Column('jsonb')
-  payload: any;
+  payload: Record<string, unknown>;
 
   @Column()
   hash: string;
