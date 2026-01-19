@@ -1,9 +1,1 @@
-node_modules
-npm-debug.log
-.next
-.env
-.env.local
-.git
-.gitignore
-README.md
-*.md
+delete
