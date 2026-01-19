@@ -24,7 +24,7 @@ export const initKeycloak = async (): Promise<boolean> => {
     });
     return authenticated;
   } catch (error) {
-    console.error('Keycloak initialization failed', error);
+    console.error('Keycloak initialization failed. Please check your Keycloak configuration and ensure the server is accessible.', error);
     return false;
   }
 };

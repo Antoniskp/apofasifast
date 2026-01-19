@@ -63,7 +63,7 @@ The `.env.example` file contains all required environment variables with default
 - `KEYCLOAK_URL=http://keycloak:8080` - Keycloak internal URL
 - `KEYCLOAK_REALM=voting` - Realm name
 - `KEYCLOAK_CLIENT_ID=api` - API client ID
-- `KEYCLOAK_CLIENT_SECRET=your-api-client-secret-here` - API client secret
+- `KEYCLOAK_CLIENT_SECRET=your-api-client-secret-here` - API client secret (should match the value in realm-export.json, or generate a new one with `openssl rand -base64 32`)
 
 #### Frontend Keycloak
 - `NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8080` - Public Keycloak URL

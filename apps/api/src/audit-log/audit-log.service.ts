@@ -13,7 +13,7 @@ export class AuditLogService {
 
   private calculateHash(
     eventType: string,
-    payload: any,
+    payload: Record<string, unknown>,
     prevHash: string | null,
   ): string {
     const data = JSON.stringify({
@@ -24,7 +24,7 @@ export class AuditLogService {
     return crypto.createHash('sha256').update(data).digest('hex');
   }
 
-  async createEvent(eventType: string, payload: any): Promise<AuditEvent> {
+  async createEvent(eventType: string, payload: Record<string, unknown>): Promise<AuditEvent> {
     // Get the last event to chain the hash
     const lastEvent = await this.auditEventRepository.findOne({
       order: { created_at: 'DESC' },
