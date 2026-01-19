@@ -4,11 +4,14 @@ This guide will help you set up and run the Voting Platform locally.
 
 ## Prerequisites
 
-- Docker and Docker Compose
-- Node.js 20+ (for local development without Docker)
+- Node.js 20+
+- PostgreSQL 15+
+- Redis 7+
+- Keycloak 23+
+- MinIO
 - Git
 
-## Quick Start with Docker Compose
+## Quick Start with Local Services
 
 1. **Clone the repository**
    ```bash
@@ -21,20 +24,39 @@ This guide will help you set up and run the Voting Platform locally.
    cp .env.example .env
    ```
 
-3. **Start all services**
-   ```bash
-   cd infra
-   docker compose up -d
-   ```
-
-4. **Wait for services to be ready**
+3. **Install and start required services**
    
-   It may take 1-2 minutes for all services to start. You can check the status with:
+   You'll need to have the following services running locally:
+   
+   - **PostgreSQL** (port 5432)
+   - **Redis** (port 6379)
+   - **Keycloak** (port 8080)
+   - **MinIO** (port 9000)
+
+4. **Configure Keycloak**
+   
+   - Access Keycloak at http://localhost:8080
+   - Import the realm configuration from `infra/keycloak/realm-export.json`
+   - Configure admin credentials as specified in `.env`
+
+5. **Install and start the applications**
+   
+   Backend API:
    ```bash
-   docker compose ps
+   cd apps/api
+   npm install
+   npm run migration:run
+   npm run start:dev
+   ```
+   
+   Frontend (in a new terminal):
+   ```bash
+   cd apps/frontend
+   npm install
+   npm run dev
    ```
 
-5. **Access the application**
+6. **Access the application**
    - Frontend: http://localhost:3000
    - API: http://localhost:3001
    - Keycloak Admin Console: http://localhost:8080
@@ -47,20 +69,20 @@ The `.env.example` file contains all required environment variables with default
 ### Key Variables:
 
 #### PostgreSQL
-- `POSTGRES_HOST=postgres` - Database host
+- `POSTGRES_HOST=localhost` - Database host
 - `POSTGRES_PORT=5432` - Database port
 - `POSTGRES_DB=voting_db` - Database name
 - `POSTGRES_USER=voting_user` - Database user
 - `POSTGRES_PASSWORD=voting_password` - Database password
 
 #### Redis
-- `REDIS_HOST=redis` - Redis host
+- `REDIS_HOST=localhost` - Redis host
 - `REDIS_PORT=6379` - Redis port
 
 #### Keycloak
 - `KEYCLOAK_ADMIN=admin` - Keycloak admin username
 - `KEYCLOAK_ADMIN_PASSWORD=admin123` - Keycloak admin password
-- `KEYCLOAK_URL=http://keycloak:8080` - Keycloak internal URL
+- `KEYCLOAK_URL=http://localhost:8080` - Keycloak URL
 - `KEYCLOAK_REALM=voting` - Realm name
 - `KEYCLOAK_CLIENT_ID=api` - API client ID
 - `KEYCLOAK_CLIENT_SECRET=your-api-client-secret-here` - API client secret (should match the value in realm-export.json, or generate a new one with `openssl rand -base64 32`)
@@ -73,7 +95,7 @@ The `.env.example` file contains all required environment variables with default
 #### MinIO
 - `MINIO_ROOT_USER=minioadmin` - MinIO admin username
 - `MINIO_ROOT_PASSWORD=minioadmin` - MinIO admin password
-- `MINIO_ENDPOINT=minio` - MinIO endpoint
+- `MINIO_ENDPOINT=localhost` - MinIO endpoint
 - `MINIO_PORT=9000` - MinIO port
 
 ## Test Users
@@ -122,7 +144,7 @@ The system comes pre-configured with test users:
    - Password: `admin123`
 4. Select the "voting" realm from the dropdown
 
-## Local Development (Without Docker)
+## Local Development
 
 ### Backend API
 
@@ -180,7 +202,7 @@ The system comes pre-configured with test users:
 
 ## Database Migrations
 
-Migrations run automatically when the API container starts. To run them manually:
+Migrations need to be run manually when setting up the database for the first time or when updating the schema:
 
 ```bash
 cd apps/api
@@ -196,47 +218,37 @@ The audit log system creates a cryptographic hash chain of events:
 
 ## Troubleshooting
 
-### Services won't start
+### PostgreSQL connection issues
 ```bash
-# Check logs
-cd infra
-docker compose logs -f
+# Check if PostgreSQL is running
+pg_isready -h localhost -p 5432
 
-# Restart specific service
-docker compose restart api
+# Check PostgreSQL logs
+# (location varies by OS and installation method)
+```
+
+### Redis connection issues
+```bash
+# Check if Redis is running
+redis-cli ping
+
+# Expected response: PONG
 ```
 
 ### Keycloak realm not imported
-```bash
-# Restart Keycloak
-docker compose restart keycloak
-```
-
-### Database connection issues
-```bash
-# Check if postgres is healthy
-docker compose ps postgres
-
-# View postgres logs
-docker compose logs postgres
-```
+- Make sure Keycloak is running
+- Import the realm manually from the Keycloak admin console
+- Use the file at `infra/keycloak/realm-export.json`
 
 ### Frontend can't connect to API
 - Make sure NEXT_PUBLIC_API_URL is set to http://localhost:3001
-- Check if the API container is running
+- Check if the API is running
 - Verify CORS is enabled in the API
 
-## Stopping the Application
-
-```bash
-cd infra
-docker compose down
-```
-
-To remove volumes as well:
-```bash
-docker compose down -v
-```
+### Service not starting
+- Check if the required ports are available (3000, 3001, 5432, 6379, 8080, 9000)
+- Verify all environment variables are set correctly
+- Check service logs for error messages
 
 ## Architecture Overview
 

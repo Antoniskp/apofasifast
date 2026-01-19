@@ -19,7 +19,6 @@ echo "✓ Checking directory structure..."
 echo ""
 echo "✓ Checking key files..."
 [ -f ".env.example" ] && echo "  ✓ .env.example exists"
-[ -f "infra/docker-compose.yml" ] && echo "  ✓ infra/docker-compose.yml exists"
 [ -f "infra/keycloak/realm-export.json" ] && echo "  ✓ infra/keycloak/realm-export.json exists"
 [ -f "docs/LOCAL-SETUP.md" ] && echo "  ✓ docs/LOCAL-SETUP.md exists"
 [ -f "README.md" ] && echo "  ✓ README.md exists"
@@ -34,7 +33,6 @@ echo "✓ Checking API structure..."
 [ -f "apps/api/src/auth/jwt.strategy.ts" ] && echo "  ✓ apps/api/src/auth/jwt.strategy.ts exists"
 [ -f "apps/api/src/audit-log/audit-log.service.ts" ] && echo "  ✓ apps/api/src/audit-log/audit-log.service.ts exists"
 [ -f "apps/api/src/migrations/1705660000000-CreateAuditEventsTable.ts" ] && echo "  ✓ apps/api/src/migrations exists"
-[ -f "apps/api/Dockerfile" ] && echo "  ✓ apps/api/Dockerfile exists"
 
 # Check Frontend structure
 echo ""
@@ -43,19 +41,6 @@ echo "✓ Checking Frontend structure..."
 [ -f "apps/frontend/app/page.tsx" ] && echo "  ✓ apps/frontend/app/page.tsx exists"
 [ -f "apps/frontend/app/dashboard/page.tsx" ] && echo "  ✓ apps/frontend/app/dashboard/page.tsx exists"
 [ -f "apps/frontend/lib/keycloak.ts" ] && echo "  ✓ apps/frontend/lib/keycloak.ts exists"
-[ -f "apps/frontend/Dockerfile" ] && echo "  ✓ apps/frontend/Dockerfile exists"
-
-# Validate docker-compose
-echo ""
-echo "✓ Validating docker-compose configuration..."
-cd infra
-if docker compose config > /dev/null 2>&1; then
-    echo "  ✓ docker-compose.yml is valid"
-else
-    echo "  ✗ docker-compose.yml has errors"
-    exit 1
-fi
-cd ..
 
 echo ""
 echo "✅ All basic checks passed!"
@@ -63,6 +48,9 @@ echo ""
 echo "Next steps:"
 echo "1. Copy .env.example to .env: cp .env.example .env"
 echo "2. Update KEYCLOAK_CLIENT_SECRET in .env with a secure value"
-echo "3. Run: cd infra && docker compose up -d"
-echo "4. Access frontend at http://localhost:3000"
+echo "3. Install and configure required services (PostgreSQL, Redis, Keycloak, MinIO)"
+echo "4. Run database migrations: cd apps/api && npm run migration:run"
+echo "5. Start the API: cd apps/api && npm run start:dev"
+echo "6. Start the Frontend: cd apps/frontend && npm run dev"
+echo "7. Access frontend at http://localhost:3000"
 echo ""

@@ -8,7 +8,6 @@ A secure, transparent, and self-hosted voting platform built with modern web tec
 - **Transparent Voting**: All votes are recorded with cryptographic audit trails
 - **Self-Hosted**: Full control over your data and infrastructure
 - **Modern Stack**: Built with Next.js, NestJS, and PostgreSQL
-- **Containerized**: Easy deployment with Docker Compose
 
 ## 📋 Architecture
 
@@ -20,7 +19,6 @@ A secure, transparent, and self-hosted voting platform built with modern web tec
 - **Database**: PostgreSQL 15
 - **Cache**: Redis 7
 - **Object Storage**: MinIO
-- **Deployment**: Docker Compose
 
 ### Project Structure
 
@@ -30,7 +28,6 @@ apofasifast/
 │   ├── frontend/          # Next.js application
 │   └── api/              # NestJS API
 ├── infra/
-│   ├── docker-compose.yml # Infrastructure definition
 │   └── keycloak/         # Keycloak realm configuration
 └── docs/
     └── LOCAL-SETUP.md    # Detailed setup instructions
@@ -39,7 +36,11 @@ apofasifast/
 ## 🏁 Quick Start
 
 1. **Prerequisites**
-   - Docker and Docker Compose
+   - Node.js 20+
+   - PostgreSQL 15+
+   - Redis 7+
+   - Keycloak 23+
+   - MinIO
    - Git
 
 2. **Clone and Setup**
@@ -49,13 +50,32 @@ apofasifast/
    cp .env.example .env
    ```
 
-3. **Start Services**
+3. **Install and Start Services**
+   
+   Set up the required services locally:
+   - PostgreSQL: Install and start PostgreSQL on port 5432
+   - Redis: Install and start Redis on port 6379
+   - Keycloak: Install and start Keycloak on port 8080
+   - MinIO: Install and start MinIO on port 9000
+
+4. **Start Applications**
+   
+   Backend API:
    ```bash
-   cd infra
-   docker compose up -d
+   cd apps/api
+   npm install
+   npm run migration:run
+   npm run start:dev
+   ```
+   
+   Frontend:
+   ```bash
+   cd apps/frontend
+   npm install
+   npm run dev
    ```
 
-4. **Access Application**
+5. **Access Application**
    - Frontend: http://localhost:3000
    - API: http://localhost:3001
    - Keycloak: http://localhost:8080
@@ -145,7 +165,7 @@ Expected response:
 
 ## 🚢 Deployment
 
-The platform is designed for lightweight VPS deployment using Docker Compose. No Kubernetes required.
+The platform is designed for lightweight VPS deployment with locally installed services.
 
 ### Production Considerations
 

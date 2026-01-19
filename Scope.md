@@ -3,7 +3,7 @@ AGENT PROMPT (PLAIN TEXT)
 Project name: Self‑hosted Voting Platform (Part 1 Foundation)
 
 Goal
-Build the first deployable foundation of a self‑hosted voting platform using Docker Compose. It must include Next.js frontend, NestJS backend, Keycloak auth, Postgres, Redis, MinIO, and a minimal audit log. This is the initial stack that will be deployed and tested on a VPS before expanding functionality.
+Build the first deployable foundation of a self‑hosted voting platform using locally installed services. It must include Next.js frontend, NestJS backend, Keycloak auth, Postgres, Redis, MinIO, and a minimal audit log. This is the initial stack that will be deployed and tested on a VPS before expanding functionality.
 
 Core Stack
 
@@ -13,25 +13,23 @@ Auth: Keycloak (OIDC)
 DB: PostgreSQL
 Cache: Redis
 Object storage: MinIO
-Deployment: Docker Compose
+Deployment: Local service installation
 Repo Structure
 
 /apps/frontend (Next.js)
 /apps/api (NestJS)
-/infra (docker compose + Keycloak realm export)
+/infra (Keycloak realm export)
 /docs (setup instructions)
 Deliverables & Acceptance Checks
 
-Docker Compose Infrastructure
+Local Services Infrastructure
 Deliverables
-/infra/docker-compose.yml with services: postgres, redis, keycloak, minio, api, frontend
-app_net network
-persistent volumes for postgres and minio
-.env.example with required variables
+.env.example with required variables for connecting to locally installed services: postgres, redis, keycloak, minio, api, frontend
+Configuration for persistent storage for postgres and minio
 Acceptance
 
-docker compose up -d works
-All services healthy
+All services can be installed and configured locally
+Services are properly connected
 Keycloak Setup
 Deliverables
 Keycloak configured with realm "voting"
@@ -84,5 +82,4 @@ A fresh user can run everything locally
 Notes
 
 Keep everything lightweight for VPS
-Use Docker Compose only (no Kubernetes)
 Keep code clean and structured for future expansion
